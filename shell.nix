@@ -32,7 +32,7 @@ pkgs.mkShell {
   buildInputs = [ energibridge ];
 
   shellHook = ''
-    chmod +x setup.sh test.sh gen_sequence.sh docker_test.sh podman_test.sh
+    chmod +x setup.sh test.sh src/gen_sequence.sh src/docker_test.sh src/podman_test.sh
     ./setup.sh
     exit
   '';

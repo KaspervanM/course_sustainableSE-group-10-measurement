@@ -12,7 +12,7 @@ SEED=$2
 INIT_TIME=$(date +%s)
 
 # Generate podman-docker sequence
-SEQUENCE=$(./gen_sequence.sh "$LENGTH" "$SEED")
+SEQUENCE=$(./src/gen_sequence.sh "$LENGTH" "$SEED")
 echo "Generated sequence: $SEQUENCE"
 
 DATETIME=$(date +'%Y%m%d_%H%M%S')
@@ -32,27 +32,29 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             echo "Round $((i+1)): Running Podman test (Docker idle)..."
 
             # Ensure Docker daemon is stopped
+            sudo systemctl stop docker.socket || true
             sudo systemctl stop docker || true
+
             sudo systemctl start podman || true
 
             # Run Podman test
             ./energibridge \
                 -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" \
-                ./podman_test.sh
+                ./src/podman_test.sh
             ;;
         d)
             echo "Round $((i+1)): Running Docker test (Podman idle)..."
 
             # Ensure Podman is stopped
-            sudo systemctl stop podman || true
             sudo systemctl stop podman.socket || true
+            sudo systemctl stop podman || true
 
             sudo systemctl start docker
 
             # Run Docker test
             ./energibridge \
                 -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" \
-                ./docker_test.sh
+                ./src/docker_test.sh
             ;;
         *)
             echo "Warning: Unknown character '$CHAR' in sequence..."
