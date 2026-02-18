@@ -17,8 +17,6 @@ pkgs.rustPlatform.buildRustPackage rec  {
     lockFile = "${src}/Cargo.lock";
   };
 
-  # nativeBuildInputs = [ pkgs.libcap ];
-
   buildPhase = ''
     cargo build --release
   '';
@@ -27,10 +25,4 @@ pkgs.rustPlatform.buildRustPackage rec  {
     mkdir -p $out/bin
     cp target/release/energibridge $out/bin/
   '';
-
-  # meta = with pkgs.lib; {
-  #   description = "EnergiBridge Rust project";
-  #   license = licenses.mit;
-  #   maintainers = [ maintainers.anon ];
-  # };
 }

@@ -11,50 +11,48 @@ SEED=$2
 
 INIT_TIME=$(date +%s)
 
-vagrant up --provision
-
 # Generate podman-docker sequence
 SEQUENCE=$(./gen_sequence.sh "$LENGTH" "$SEED")
 echo "Generated sequence: $SEQUENCE"
-
 
 DATETIME=$(date +'%Y%m%d_%H%M%S')
 
 OUTPUT_DIR_PODMAN="./artifacts/podman/test_$DATETIME"
 OUTPUT_DIR_DOCKER="./artifacts/docker/test_$DATETIME"
-mkdir -p "$OUTPUT_DIR_PODMAN"
-mkdir -p "$OUTPUT_DIR_DOCKER"
+mkdir -p "$OUTPUT_DIR_PODMAN" "$OUTPUT_DIR_DOCKER"
 
 # Loop over podman-docker sequence
 for (( i=0; i<${#SEQUENCE}; i++ )); do
     CHAR=${SEQUENCE:$i:1}
     DATETIME=$(date +'%Y%m%d_%H%M%S')
     OUTPUT_FILENAME="measurement1_$DATETIME.csv"
-    
+
     case $CHAR in
         p)
-            echo "Round $((i+1)): Running Podman test on podman_vm (docker_vm idling)..."
+            echo "Round $((i+1)): Running Podman test (Docker idle)..."
 
-            # Ensure Docker VM is halted / idling
-            vagrant halt docker_vm -f
-            vagrant up podman_vm
+            # Ensure Docker daemon is stopped
+            sudo systemctl stop docker || true
+            sudo systemctl start podman || true
 
-            # Run podman test
-            ./energibridge -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" vagrant ssh podman_vm -c "./podman_test.sh"
-
-            vagrant halt podman_vm -f
+            # Run Podman test
+            ./energibridge \
+                -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" \
+                ./podman_test.sh
             ;;
         d)
-            echo "Round $((i+1)): Running Docker test on docker_vm (podman_vm idling)..."
+            echo "Round $((i+1)): Running Docker test (Podman idle)..."
 
-            # Ensure Podman VM is halted / idling
-            vagrant halt podman_vm -f
-            vagrant up docker_vm
-            
-            # Run docker test
-            ./energibridge -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" vagrant ssh docker_vm -c "./docker_test.sh"
+            # Ensure Podman is stopped
+            sudo systemctl stop podman || true
+            sudo systemctl stop podman.socket || true
 
-            vagrant halt docker_vm -f
+            sudo systemctl start docker
+
+            # Run Docker test
+            ./energibridge \
+                -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" \
+                ./docker_test.sh
             ;;
         *)
             echo "Warning: Unknown character '$CHAR' in sequence..."
