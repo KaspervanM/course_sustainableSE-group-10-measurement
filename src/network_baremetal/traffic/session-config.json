@@ -1,0 +1,198 @@
+{
+    "1": [
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=10&seconds=1",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page2",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/seed?count=1",
+            "delay_after": 0.1
+        },
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0.01
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=2",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=10&seconds=4",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=1",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=10&seconds=3",
+            "delay_after": 0.2
+        }
+    ],
+    "2": [
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=12&seconds=1",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "backend",
+            "request": "/seed?count=2",
+            "delay_after": 0.1
+        },
+        {
+            "contact": "frontend",
+            "request": "/page2",
+            "delay_after": 0.03
+        },
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0.015
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=18&seconds=3",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=1",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=15&seconds=3",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=12&seconds=5",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=2",
+            "delay_after": 0.05
+        }
+    ],
+    "3": [
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=15&seconds=3",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/seed?count=1",
+            "delay_after": 0.1
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=10&seconds=4",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page1",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=2",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/sql?intensity=1",
+            "delay_after": 0.05
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=12&seconds=1",
+            "delay_after": 0.2
+        },
+        {
+            "contact": "frontend",
+            "request": "/page2",
+            "delay_after": 0
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "frontend",
+            "request": "/page3",
+            "delay_after": 0
+        },
+        {
+            "contact": "backend",
+            "request": "/stress/mem?size_mb=10&seconds=3",
+            "delay_after": 0.2
+        }
+    ]
+}

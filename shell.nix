@@ -29,7 +29,7 @@ let
 };
 in
 pkgs.mkShell {
-  buildInputs = [ energibridge ];
+  buildInputs = [ energibridge pkgs.jq ];
 
   shellHook = ''
     chmod +x setup.sh test.sh src/gen_sequence.sh src/docker_test.sh src/podman_test.sh
