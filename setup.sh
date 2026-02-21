@@ -6,7 +6,6 @@ BIN_SRC="$(which energibridge)"
 COPIED_BIN="./${BIN_NAME}"
 USER_TO_ADD="$(whoami)"
 GROUP_NAME="msr"
-TEST_SCRIPT="./src/test.sh"
 
 cleanup() {
   echo "Cleaning up..."
@@ -33,9 +32,9 @@ cleanup() {
 
 trap cleanup EXIT INT TERM ERR
 
-cp "$BIN_SRC" .
+cp "$BIN_SRC" "$COPIED_BIN"
 
-sudo setcap cap_sys_rawio=ep "$BIN_NAME"
+sudo setcap cap_sys_rawio=ep "$COPIED_BIN"
 
 sudo modprobe msr || true
 
@@ -48,5 +47,5 @@ sudo usermod -a -G "$GROUP_NAME" "$USER_TO_ADD"
 
 echo "Switching to a shell with '$GROUP_NAME' group active..."
 echo "To exit, run 'exit'"
-echo "To run energibridge, run './energibridge'"
+echo "To run the experiment, run './test.sh <length> <seed>'"
 sg "$GROUP_NAME" "$SHELL"

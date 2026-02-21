@@ -13,16 +13,20 @@ while getopts "c:n:" opt; do
     esac
 done
 
-# Endpoints matching the session profiles
+# Seed the database before the load test
+echo "Seeding database..."
+curl -sf --max-time 30 -o /dev/null 'http://localhost:8081/seed?count=1'
+curl -sf --max-time 30 -o /dev/null 'http://localhost:8081/seed?count=2'
+echo "Seeding complete."
+
+# Endpoints (no seed endpoints — seeding is done above)
 ENDPOINTS=(
     "http://localhost:8080/page1"
     "http://localhost:8081/stress/mem?size_mb=10&seconds=1"
     "http://localhost:8080/page2"
-    "http://localhost:8081/seed?count=1"
     "http://localhost:8081/stress/sql?intensity=2"
     "http://localhost:8080/page3"
     "http://localhost:8081/stress/mem?size_mb=12&seconds=1"
-    "http://localhost:8081/seed?count=2"
     "http://localhost:8081/stress/sql?intensity=1"
     "http://localhost:8081/stress/mem?size_mb=15&seconds=3"
 )
