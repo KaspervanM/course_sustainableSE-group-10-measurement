@@ -2,3 +2,4 @@ artifacts/
 energibridge
 **mysql.log
 CLAUDE.md
+target/
