@@ -32,7 +32,7 @@ for ((i=1; i<=NUM_PROCS; i++)); do
 
     echo "Starting worker=$WORKER id=$ID"
 
-    ./src/network_baremetal/traffic/session-simulator.sh "$CONFIG_FILE" "$WORKER" "$ID" &
+    ./src/network/traffic/session-simulator.sh "$CONFIG_FILE" "$WORKER" "$ID" &
     pids+=($!)
 
     sleep "$DELAY"

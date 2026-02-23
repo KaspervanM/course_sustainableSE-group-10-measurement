@@ -1,13 +1,11 @@
 services:
   db:
-    image: mysql:8.0
+    build: ./db
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_USER: user
       MYSQL_PASSWORD: pass
       MYSQL_DATABASE: hw_shop
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - app-net
     healthcheck:

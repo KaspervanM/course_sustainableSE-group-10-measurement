@@ -44,8 +44,8 @@ echo "Pre-building container images for Docker..."
 if [ "$IS_LINUX" = true ]; then
     sudo systemctl start docker
 fi
-BUILD=1 RUNTIME=docker ./src/network_baremetal/container-up.sh
-RUNTIME=docker ./src/network_baremetal/container-down.sh
+BUILD=1 RUNTIME=docker ./src/network/container-up.sh
+RUNTIME=docker ./src/network/container-down.sh
 
 if ! command -v podman &>/dev/null; then
     echo "Error: Podman not found. Both Docker and Podman are required for the experiment."
@@ -58,8 +58,8 @@ if [ "$IS_LINUX" = true ]; then
     sudo systemctl stop docker || true
     sudo systemctl start podman || true
 fi
-BUILD=1 RUNTIME=podman ./src/network_baremetal/container-up.sh
-RUNTIME=podman ./src/network_baremetal/container-down.sh
+BUILD=1 RUNTIME=podman ./src/network/container-up.sh
+RUNTIME=podman ./src/network/container-down.sh
 
 echo "Pre-build complete."
 

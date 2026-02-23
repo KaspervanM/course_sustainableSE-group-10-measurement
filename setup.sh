@@ -3,7 +3,7 @@ set -euo pipefail
 
 BIN_NAME="energibridge"
 BIN_SRC="$(which energibridge)"
-COPIED_BIN="./${BIN_NAME}"
+COPIED_BIN="./energibridge/target/release/${BIN_NAME}"
 USER_TO_ADD="$(whoami)"
 GROUP_NAME="msr"
 
@@ -32,6 +32,7 @@ cleanup() {
 
 trap cleanup EXIT INT TERM ERR
 
+mkdir -p "$(dirname "$COPIED_BIN")"
 cp "$BIN_SRC" "$COPIED_BIN"
 
 sudo setcap cap_sys_rawio=ep "$COPIED_BIN"
