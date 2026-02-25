@@ -3,3 +3,4 @@ energibridge
 **mysql.log
 CLAUDE.md
 target/
+.DS_Store

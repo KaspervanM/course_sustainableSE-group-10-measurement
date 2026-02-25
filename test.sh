@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <length> <seed>"
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <length> <seed> <network | cpu>"
     exit 1
 fi
 
 LENGTH=$1
 SEED=$2
+TASK=$3
 
 IS_LINUX=false
 if [ "$(uname)" = "Linux" ]; then
@@ -46,8 +47,8 @@ echo "Pre-building container images for Docker..."
 if [ "$IS_LINUX" = true ]; then
     sudo systemctl start docker
 fi
-BUILD=1 RUNTIME=docker ./src/network/container-up.sh
-RUNTIME=docker ./src/network/container-down.sh
+BUILD=1 RUNTIME=docker "./src/$TASK/container-up.sh"
+RUNTIME=docker "./src/$TASK/container-down.sh"
 
 if ! command -v podman &>/dev/null; then
     echo "Error: Podman not found. Both Docker and Podman are required for the experiment."
@@ -60,8 +61,8 @@ if [ "$IS_LINUX" = true ]; then
     sudo systemctl stop docker || true
     sudo systemctl start podman || true
 fi
-BUILD=1 RUNTIME=podman ./src/network/container-up.sh
-RUNTIME=podman ./src/network/container-down.sh
+BUILD=1 RUNTIME=podman "./src/$TASK/container-up.sh"
+RUNTIME=podman "./src/$TASK/container-down.sh"
 
 echo "Pre-build complete."
 
@@ -89,7 +90,7 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             # Run Podman test
             "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" \
-                ./src/podman_test.sh
+                "./src/$TASK/podman_test.sh"
             ;;
         d)
             echo "Round $((i+1)): Running Docker test (Podman idle)..."
@@ -105,7 +106,7 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             # Run Docker test
             "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" \
-                ./src/docker_test.sh
+                "./src/$TASK/docker_test.sh"
             ;;
         *)
             echo "Warning: Unknown character '$CHAR' in sequence..."

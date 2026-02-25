@@ -25,8 +25,8 @@ fi
 
 if [ ! -d "$SOCKET_DIR" ]; then
     echo "Creating MySQL socket directory at $SOCKET_DIR..."
-    sudo mkdir -p "$SOCKET_DIR"
-    sudo chown mysql:mysql "$SOCKET_DIR"
+    mkdir -p "$SOCKET_DIR"
+    chown mysql:mysql "$SOCKET_DIR"
 fi
 
 echo "Starting MySQL server..."
