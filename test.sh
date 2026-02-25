@@ -12,21 +12,23 @@ SEED=$2
 IS_LINUX=false
 if [ "$(uname)" = "Linux" ]; then
     IS_LINUX=true
-fi
-
-if [ "$IS_LINUX" = true ]; then
-    # On Linux, setup.sh copies energibridge to ./energibridge
-    ENERGIBRIDGE="./energibridge"
 else
     echo "Warning: Not running on Linux — systemctl calls will be skipped."
     echo "Runtime isolation is NOT enforced. Docker Desktop must be running."
-    # On macOS, use the cargo-built binary
-    ENERGIBRIDGE="./energibridge/target/release/energibridge"
 fi
 
+ENERGIBRIDGE="./energibridge/target/release/energibridge"
+
 if [ ! -x "$ENERGIBRIDGE" ]; then
-    echo "Error: energibridge binary not found at $ENERGIBRIDGE"
-    exit 1
+    echo "energibridge binary not found at $ENERGIBRIDGE — building from source..."
+    if [ ! -d "./energibridge" ]; then
+        git clone https://github.com/tdurieux/EnergiBridge energibridge
+    fi
+    cargo build --release --manifest-path ./energibridge/Cargo.toml
+    if [ ! -x "$ENERGIBRIDGE" ]; then
+        echo "Error: failed to build energibridge"
+        exit 1
+    fi
 fi
 
 # Generate podman-docker sequence
