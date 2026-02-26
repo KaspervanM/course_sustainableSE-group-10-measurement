@@ -63,13 +63,6 @@ case "$RUNTIME" in
             echo "Removing existing container named $CONTAINER_NAME"
             docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
         fi
-
-        # run container detached, keep it alive with a simple `tail -f /dev/null`
-        # the dockerfile sets WORKDIR=/work and includes the built artifacts.
-        docker run -d --name "$CONTAINER_NAME" -w /work \
-            --user "$(id -u):$(id -g)" \
-            "$IMAGE_NAME" \
-            bash -c 'tail -f /dev/null'
         ;;
     podman)
         if ! command -v podman >/dev/null 2>&1; then
@@ -81,11 +74,6 @@ case "$RUNTIME" in
             echo "Removing existing container named $CONTAINER_NAME"
             podman rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
         fi
-
-        podman run -d --name "$CONTAINER_NAME" -w /work \
-            --user "$(id -u):$(id -g)" \
-            "$IMAGE_NAME" \
-            bash -c 'tail -f /dev/null'
         ;;
     *)
         echo "Error: unsupported RUNTIME: $RUNTIME"
@@ -93,4 +81,4 @@ case "$RUNTIME" in
         ;;
 esac
 
-echo "Container $CONTAINER_NAME started (detached)."
+echo "Container $CONTAINER_NAME is available to start"

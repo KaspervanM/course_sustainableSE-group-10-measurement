@@ -14,4 +14,4 @@ SEARCH_MS=$2
   printf "position %s\n" "$START_POS"
   printf "go movetime %s\n" "$SEARCH_MS"
   sleep $((SEARCH_MS / 1000 + 1))
-} | ./src/cpu/target/release/chesseng
+} | /usr/src/cpu/target/release/chesseng

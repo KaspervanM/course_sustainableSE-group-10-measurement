@@ -1,26 +1,22 @@
-FROM rust:slim AS builder
+FROM rust:slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RUNTIME=docker
 
 WORKDIR /usr/src/cpu
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends bash ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY src/cpu/Cargo.toml ./Cargo.toml
 COPY src/cpu/Cargo.lock ./Cargo.lock
+
 COPY src/cpu/src ./src
 
-RUN cargo build --release
+RUN cargo build --release --locked
 
-FROM alpine:3.20 AS runtime
+COPY src/cpu/test.sh /usr/src/cpu/test.sh
+COPY src/cpu/search.sh /usr/src/cpu/search.sh
 
-WORKDIR /work
-
-# ./src/cpu/target/release/chesseng
-RUN mkdir -p ./src/cpu/target/release
-COPY --from=builder /usr/src/cpu/target/release/chesseng ./src/cpu/target/release/chesseng
-
-COPY src/cpu/test.sh ./src/cpu/test.sh
-COPY src/cpu/search.sh ./src/cpu/search.sh
-
-RUN chmod +x ./src/cpu/test.sh ./src/cpu/search.sh ./src/cpu/target/release/chesseng
-
-ENV RUNTIME=docker
-
-ENTRYPOINT ["sh", "-lc", "./src/cpu/test.sh"]
+RUN chmod +x /usr/src/cpu/test.sh /usr/src/cpu/search.sh /usr/src/cpu/target/release/chesseng
