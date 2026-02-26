@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Defaults
-CONCURRENCY=100
-TOTAL=5000
+CONCURRENCY=200
+TOTAL=10000
 
 while getopts "c:n:" opt; do
     case "$opt" in
@@ -22,13 +22,13 @@ echo "Seeding complete."
 # Endpoints (no seed endpoints — seeding is done above)
 ENDPOINTS=(
     "http://localhost:8080/page1"
-    "http://localhost:8081/stress/mem?size_mb=10&seconds=1"
+    "http://localhost:8081/stress/mem?size_mb=70&seconds=1"
     "http://localhost:8080/page2"
     "http://localhost:8081/stress/sql?intensity=2"
     "http://localhost:8080/page3"
-    "http://localhost:8081/stress/mem?size_mb=12&seconds=1"
+    "http://localhost:8081/stress/mem?size_mb=60&seconds=1"
     "http://localhost:8081/stress/sql?intensity=1"
-    "http://localhost:8081/stress/mem?size_mb=15&seconds=3"
+    "http://localhost:8081/stress/mem?size_mb=50&seconds=3"
 )
 
 NUM_ENDPOINTS=${#ENDPOINTS[@]}
