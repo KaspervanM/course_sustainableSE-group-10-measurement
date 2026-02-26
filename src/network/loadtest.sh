@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Defaults
-CONCURRENCY=150
+CONCURRENCY=100
 TOTAL=10000
 
 while getopts "c:n:" opt; do
