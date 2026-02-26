@@ -1,0 +1,48 @@
+services:
+  db:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_DATABASE: hw_shop
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      MYSQL_DSN: "user:pass@tcp(db:3306)/hw_shop?parseTime=true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8081/seed?count=1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/page1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  app-net:
+    driver: bridge

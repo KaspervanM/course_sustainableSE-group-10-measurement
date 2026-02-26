@@ -9,7 +9,27 @@ fi
 LENGTH=$1
 SEED=$2
 
-INIT_TIME=$(date +%s)
+IS_LINUX=false
+if [ "$(uname)" = "Linux" ]; then
+    IS_LINUX=true
+else
+    echo "Warning: Not running on Linux — systemctl calls will be skipped."
+    echo "Runtime isolation is NOT enforced. Docker Desktop must be running."
+fi
+
+ENERGIBRIDGE="./energibridge/target/release/energibridge"
+
+if [ ! -x "$ENERGIBRIDGE" ]; then
+    echo "energibridge binary not found at $ENERGIBRIDGE — building from source..."
+    if [ ! -d "./energibridge" ]; then
+        git clone https://github.com/tdurieux/EnergiBridge energibridge
+    fi
+    cargo build --release --manifest-path ./energibridge/Cargo.toml
+    if [ ! -x "$ENERGIBRIDGE" ]; then
+        echo "Error: failed to build energibridge"
+        exit 1
+    fi
+fi
 
 # Generate podman-docker sequence
 SEQUENCE=$(./src/gen_sequence.sh "$LENGTH" "$SEED")
@@ -21,6 +41,33 @@ OUTPUT_DIR_PODMAN="./artifacts/podman/test_$DATETIME"
 OUTPUT_DIR_DOCKER="./artifacts/docker/test_$DATETIME"
 mkdir -p "$OUTPUT_DIR_PODMAN" "$OUTPUT_DIR_DOCKER"
 
+# Pre-build images for both runtimes (not measured by energibridge)
+echo "Pre-building container images for Docker..."
+if [ "$IS_LINUX" = true ]; then
+    sudo systemctl start docker
+fi
+BUILD=1 RUNTIME=docker ./src/network/container-up.sh
+RUNTIME=docker ./src/network/container-down.sh
+
+if ! command -v podman &>/dev/null; then
+    echo "Error: Podman not found. Both Docker and Podman are required for the experiment."
+    exit 1
+fi
+
+echo "Pre-building container images for Podman..."
+if [ "$IS_LINUX" = true ]; then
+    sudo systemctl stop docker.socket || true
+    sudo systemctl stop docker || true
+    sudo systemctl start podman || true
+fi
+BUILD=1 RUNTIME=podman ./src/network/container-up.sh
+RUNTIME=podman ./src/network/container-down.sh
+
+echo "Pre-build complete."
+
+# Start timing after pre-build
+INIT_TIME=$(date +%s)
+
 # Loop over podman-docker sequence
 for (( i=0; i<${#SEQUENCE}; i++ )); do
     CHAR=${SEQUENCE:$i:1}
@@ -31,28 +78,32 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
         p)
             echo "Round $((i+1)): Running Podman test (Docker idle)..."
 
-            # Ensure Docker daemon is stopped
-            sudo systemctl stop docker.socket || true
-            sudo systemctl stop docker || true
+            if [ "$IS_LINUX" = true ]; then
+                # Ensure Docker daemon is stopped
+                sudo systemctl stop docker.socket || true
+                sudo systemctl stop docker || true
 
-            sudo systemctl start podman || true
+                sudo systemctl start podman || true
+            fi
 
             # Run Podman test
-            ./energibridge \
+            "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" \
                 ./src/podman_test.sh
             ;;
         d)
             echo "Round $((i+1)): Running Docker test (Podman idle)..."
 
-            # Ensure Podman is stopped
-            sudo systemctl stop podman.socket || true
-            sudo systemctl stop podman || true
+            if [ "$IS_LINUX" = true ]; then
+                # Ensure Podman is stopped
+                sudo systemctl stop podman.socket || true
+                sudo systemctl stop podman || true
 
-            sudo systemctl start docker
+                sudo systemctl start docker
+            fi
 
             # Run Docker test
-            ./energibridge \
+            "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" \
                 ./src/docker_test.sh
             ;;

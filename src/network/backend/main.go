@@ -5,15 +5,17 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"runtime"
+	"runtime/debug"
 	"strconv"
+	"strings"
+	"sync"
 	"time"
-    "sync"
-    "runtime/debug"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -212,7 +214,10 @@ func stressMem(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	dsn := "user:pass@tcp(127.0.0.1:3306)/hw_shop?parseTime=true"
+	dsn := os.Getenv("MYSQL_DSN")
+	if dsn == "" {
+		dsn = "user:pass@tcp(127.0.0.1:3306)/hw_shop?parseTime=true"
+	}
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
