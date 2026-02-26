@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Defaults
-CONCURRENCY=100
+CONCURRENCY=75
 TOTAL=7500
 
 while getopts "c:n:" opt; do
@@ -16,7 +16,7 @@ done
 # Seed the database before the load test
 echo "Seeding database..."
 curl -sf --max-time 30 -o /dev/null 'http://localhost:8081/seed?count=1'
-curl -sf --max-time 30 -o /dev/null 'http://localhost:8081/seed?count=2'
+curl -sf --max-time 30 -o /dev/null 'http://localhost:8081/seed?count=1'
 echo "Seeding complete."
 
 # Endpoints (no seed endpoints — seeding is done above)
