@@ -12,6 +12,6 @@ if ! command -v docker >/dev/null 2>&1; then
 fi
 
 echo "Running search.sh in container $CONTAINER_NAME from image $IMAGE_NAME (runtime: docker)"
-docker run --rm --name "$CONTAINER_NAME" "$IMAGE_NAME" sh -lc '/usr/src/cpu/search.sh "startpos" 10000'
+docker run --rm --name "$CONTAINER_NAME" "$IMAGE_NAME" sh -lc '/usr/src/cpu/search.sh "startpos" 8000'
 
 RUNTIME=docker ./src/cpu/container-down.sh
