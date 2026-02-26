@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo echo "This script uses sudo internally."
-
-PID_MYSQLD=$(sudo db/start-mysql.sh | tail -n1)
+PID_MYSQLD=$(sh db/start-mysql.sh | tail -n1)
 
 $(cd backend && go build)
 $(cd frontend && go build)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
     echo "Usage: $0 <length> <seed>"
     exit 1
 fi
@@ -33,6 +33,7 @@ fi
 
 # Generate podman-docker sequence
 SEQUENCE=$(./src/gen_sequence.sh "$LENGTH" "$SEED")
+RANDOM=$(($SEED + 1)) # need different seed
 echo "Generated sequence: $SEQUENCE"
 
 DATETIME=$(date +'%Y%m%d_%H%M%S')
@@ -46,8 +47,10 @@ echo "Pre-building container images for Docker..."
 if [ "$IS_LINUX" = true ]; then
     sudo systemctl start docker
 fi
-BUILD=1 RUNTIME=docker ./src/network/container-up.sh
-RUNTIME=docker ./src/network/container-down.sh
+BUILD=1 RUNTIME=docker "./src/network/container-up.sh"
+RUNTIME=docker "./src/network/container-down.sh"
+BUILD=1 RUNTIME=docker "./src/cpu/container-up.sh"
+RUNTIME=docker "./src/cpu/container-down.sh"
 
 if ! command -v podman &>/dev/null; then
     echo "Error: Podman not found. Both Docker and Podman are required for the experiment."
@@ -60,8 +63,10 @@ if [ "$IS_LINUX" = true ]; then
     sudo systemctl stop docker || true
     sudo systemctl start podman || true
 fi
-BUILD=1 RUNTIME=podman ./src/network/container-up.sh
-RUNTIME=podman ./src/network/container-down.sh
+BUILD=1 RUNTIME=podman "./src/network/container-up.sh"
+RUNTIME=podman "./src/network/container-down.sh"
+BUILD=1 RUNTIME=podman "./src/cpu/container-up.sh"
+RUNTIME=podman "./src/cpu/container-down.sh"
 
 echo "Pre-build complete."
 
@@ -71,6 +76,11 @@ INIT_TIME=$(date +%s)
 # Loop over podman-docker sequence
 for (( i=0; i<${#SEQUENCE}; i++ )); do
     CHAR=${SEQUENCE:$i:1}
+    if [ $RANDOM % 2 -eq 0 ]; then
+        TASK="cpu"
+    else
+        TASK="network"
+    fi
     DATETIME=$(date +'%Y%m%d_%H%M%S')
     OUTPUT_FILENAME="measurement1_$DATETIME.csv"
 
@@ -89,7 +99,7 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             # Run Podman test
             "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_PODMAN/$OUTPUT_FILENAME" \
-                ./src/podman_test.sh
+                "./src/$TASK/podman_test.sh"
             ;;
         d)
             echo "Round $((i+1)): Running Docker test (Podman idle)..."
@@ -105,7 +115,7 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             # Run Docker test
             "$ENERGIBRIDGE" \
                 -o "$OUTPUT_DIR_DOCKER/$OUTPUT_FILENAME" \
-                ./src/docker_test.sh
+                "./src/$TASK/docker_test.sh"
             ;;
         *)
             echo "Warning: Unknown character '$CHAR' in sequence..."

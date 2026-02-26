@@ -1,0 +1,73 @@
+[package]
+name = "chesseng"
+version = "0.6.3"
+edition = "2024"
+authors = ["Andreas Tsatsanis"]
+
+[lib]
+name = "sandy_engine"
+path = "src/engine/lib.rs"
+bench = false
+
+[[bin]]
+name = "chesseng"
+path = "src/sandy/main.rs"
+bench = false
+
+[features]
+perf = []
+
+[dependencies]
+chess = "3.2.0"
+anyhow = "1.0.92"
+vampirc-uci = {version = "0.11", features = ["chess"]}
+log = { version = "0.4", features = [] }
+colog = "1.3.0"
+chrono = "0.4.38"
+inquire = "0.7.5"
+smallvec = "1.13.2"
+lockfree = "0.5.1"
+rayon = "1.10.0"
+#jja = { version = "0.9.1", features = [] }
+
+[dev-dependencies]
+criterion = { version = "0.5.1", features = [] }
+iai = "0.1.1"
+colored = "3.0.0"
+
+[profile.dev]
+opt-level = 0
+debug = true
+strip = "none"
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+codegen-units = 256
+rpath = false
+
+[profile.release]
+opt-level = 3
+debug = false
+strip = "none"
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'abort'
+incremental = false
+codegen-units = 1
+rpath = false
+
+[lints.rust]
+missing_docs = "warn"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[lints.clippy]
+redundant_static_lifetimes = "allow"
+missing_docs_in_private_items = "warn"
+missing_safety_doc = "warn"
+undocumented_unsafe_blocks = "warn"
+new_without_default = "allow"
+
