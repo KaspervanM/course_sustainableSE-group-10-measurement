@@ -128,3 +128,7 @@ src/
       init.sql                   # MySQL schema and seed data
 artifacts/                       # Measurement CSV output
 ```
+
+## Replicability
+
+The test results were acquired on a desktop which ran NixOS. The configuration used is available in `configuration.nix`.
