@@ -111,6 +111,9 @@ Replace `docker` with `podman` to test under Podman. Omit `BUILD=1` on subsequen
 ```
 test.sh                          # Main experiment runner
 setup.sh                         # Linux EnergiBridge setup (MSR permissions)
+configuration.nix                # Configuration used on computer used to acquire experiment data
+analysis.ipynb                   # Notebook that contains data analysis
+shell.nix                        # Declarative shell environment mainly used to install energibridge
 src/
   gen_sequence.sh                # Generates randomized d/p sequence
   docker_test.sh                 # Single Docker measurement run
@@ -128,3 +131,15 @@ src/
       init.sql                   # MySQL schema and seed data
 artifacts/                       # Measurement CSV output
 ```
+
+## Replicability
+
+The test results were acquired on a desktop which ran NixOS. The configuration used is available in `configuration.nix`.
+
+## Data Analysis
+
+To analyse the data, copy the desired measurements into the `test_results` folder (replace if already exists).
+Then, run the cells in the jupyter notebook.
+
+To run the jupyter notebook service on your PC, you can create a virtual python environment: `python3 -m venv .venv`.
+Then, run `source .venv/bin/activate`. Next, install jupyter (e.g. `pip install jupyter`). Finally, run `jupyter notebook`.

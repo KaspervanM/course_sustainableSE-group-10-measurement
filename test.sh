@@ -73,6 +73,7 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
     CHAR=${SEQUENCE:$i:1}
     DATETIME=$(date +'%Y%m%d_%H%M%S')
     OUTPUT_FILENAME="measurement1_$DATETIME.csv"
+    ROUND_INIT_TIME=$(date +%s)
 
     case $CHAR in
         p)
@@ -112,6 +113,14 @@ for (( i=0; i<${#SEQUENCE}; i++ )); do
             exit
             ;;
     esac
+    ROUND_END_TIME=$(date +%s)
+    DIFF=$((ROUND_END_TIME - ROUND_INIT_TIME))
+
+    HOURS=$((DIFF / 3600))
+    MIN=$(((DIFF % 3600) / 60))
+    SEC=$((DIFF % 60))
+
+    printf "Round $((i+1)): Time elapsed: %02d:%02d:%02d\n" "$HOURS" "$MIN" "$SEC"
 done
 
 END_TIME=$(date +%s)
