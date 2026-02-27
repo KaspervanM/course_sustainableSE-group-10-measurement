@@ -22,13 +22,13 @@ echo "Seeding complete."
 # Endpoints (no seed endpoints — seeding is done above)
 ENDPOINTS=(
     "http://localhost:8080/page1"
-    "http://localhost:8081/stress/mem?size_mb=70&seconds=1"
+    "http://localhost:8081/stress/mem?size_mb=700&seconds=1"
     "http://localhost:8080/page2"
     "http://localhost:8081/stress/sql?intensity=2"
     "http://localhost:8080/page3"
-    "http://localhost:8081/stress/mem?size_mb=60&seconds=1"
+    "http://localhost:8081/stress/mem?size_mb=600&seconds=1"
     "http://localhost:8081/stress/sql?intensity=1"
-    "http://localhost:8081/stress/mem?size_mb=50&seconds=3"
+    "http://localhost:8081/stress/mem?size_mb=500&seconds=3"
 )
 
 NUM_ENDPOINTS=${#ENDPOINTS[@]}
