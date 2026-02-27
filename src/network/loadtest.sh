@@ -24,7 +24,6 @@ ENDPOINTS=(
     "http://localhost:8080/page1"
     "http://localhost:8081/stress/mem?size_mb=700&seconds=1"
     "http://localhost:8080/page2"
-    "http://localhost:8081/stress/sql?intensity=1"
     "http://localhost:8080/page3"
     "http://localhost:8081/stress/mem?size_mb=600&seconds=1"
     "http://localhost:8081/stress/sql?intensity=1"
