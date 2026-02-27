@@ -2,3 +2,5 @@ artifacts/
 energibridge
 **mysql.log
 CLAUDE.md
+.venv
+.ipynb_checkpoints
