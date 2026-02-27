@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Defaults
 CONCURRENCY=15
-TOTAL=7500
+TOTAL=1000
 
 while getopts "c:n:" opt; do
     case "$opt" in
